@@ -1,6 +1,6 @@
 import fileinput
 
-from basic_data_structures import Stack
+from basic_data_structure import Stack
 from model import Transaction
 from tool import exch, print_split
 

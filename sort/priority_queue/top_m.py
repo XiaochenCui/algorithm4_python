@@ -1,7 +1,7 @@
 import fileinput
 import sys
 
-from basic_data_structures import Stack
+from basic_data_structure import Stack
 from model import Transaction
 # from sort.priority_queue.pq_array_disorder import PQ
 from sort.priority_queue.pq_array_order import MaxPQ, MinPQ
