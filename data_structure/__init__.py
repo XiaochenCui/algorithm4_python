@@ -1,0 +1,1 @@
+print('hello','hi',sep='9')

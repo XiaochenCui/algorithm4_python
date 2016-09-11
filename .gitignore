@@ -100,3 +100,6 @@ ENV/
 
 # Rope project settings
 .ropeproject
+/tests/
+/extend_subject/
+/model/
