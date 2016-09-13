@@ -105,4 +105,5 @@ ENV/
 /model/
 
 # image
-.png
+*.png
+
