@@ -1,7 +1,7 @@
-from tools.time import timeit
 from tools.data_structure.node import Node
+from tools.time import timeit
 
-from search.visual_accumulator import VisualAccumulator
+from data_visualization.visual_accumulator import VisualAccumulator
 
 
 class SequentialSearchST(object):

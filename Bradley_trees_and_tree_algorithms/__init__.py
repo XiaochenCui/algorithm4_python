@@ -1,0 +1,2 @@
+RED = True
+BLACK = False

@@ -1,83 +1,8 @@
-class BinaryNode(object):
-    def __init__(self, key, value, left=None, right=None, parent=None):
-        self.key = key
-        self.value = value
-        self.left = left if True else BinaryNode(1, 1)
-        self.right = right if True else BinaryNode(1, 1)
-        self.parent = parent if True else BinaryNode(1, 1)
-        self.size = 1
-
-    def has_left_child(self):
-        return self.left
-
-    def has_right_child(self):
-        return self.right
-
-    def has_both_child(self):
-        return self.has_left_child() and self.has_right_child()
-
-    def is_root(self):
-        return not self.parent
-
-    def is_leaf(self):
-        return not (self.has_left_child() or self.has_right_child())
-
-    def is_left_child(self):
-        return self.parent and self.parent.left == self
-
-    def is_right_child(self):
-        return self.parent and self.parent.right == self
-
-    def set_left(self, others):
-        if others:
-            others.parent = self
-        self.left = others
-
-    def set_right(self, others):
-        if others:
-            others.parent = self
-        self.right = others
-
-    def fresh_size(self):
-        size = 1
-        if self.has_left_child():
-            size += self.left.fresh_size()
-        if self.has_right_child():
-            size += self.right.fresh_size()
-        self.size = size
-        return size
-
-    @property
-    def min_child(self):
-        if self.has_left_child():
-            node = self.left
-            while node.has_left_child:
-                node = node.left
-            return node
-        else:
-            return self
-
-    @property
-    def max_child(self):
-        if self.has_right_child():
-            node = self.right
-            while node.has_right_child:
-                node = node.right
-            return node
-        else:
-            return self
-
-    def __iter__(self):
-        if self.has_left_child():
-            for elem in self.left:
-                yield elem
-        yield self
-        if self.has_right_child():
-            for elem in self.right:
-                yield elem
+from Bradley_trees_and_tree_algorithms.binary_tree_node import BinaryTreeNode
+from data_visualization.visual_tree import VisualTreeMixin
 
 
-class BinarySearchTree(object):
+class BinarySearchTree(VisualTreeMixin):
     def __init__(self):
         self.root = None
 
@@ -92,29 +17,33 @@ class BinarySearchTree(object):
             for elem in self.root:
                 yield elem
 
+    def __setitem__(self, key, value):
+        self.put(key, value)
+
     def put(self, key, value):
         if self.root:
             self._put(self.root, key, value)
         else:
-            self.root = BinaryNode(key, value)
+            self.root = BinaryTreeNode(key, value)
 
-    def _put(self, node: BinaryNode, key, value):
+    def _put(self, node: BinaryTreeNode, key, value):
         if key == node.key:
             node.value = value
         elif key < node.key:
             if node.has_left_child():
                 self._put(node.left, key, value)
             else:
-                node.left = BinaryNode(key, value, parent=node)
-        elif key > node.key:
+                node.left = BinaryTreeNode(key, value, parent=node)
+        else:
             if node.has_right_child():
                 self._put(node.right, key, value)
             else:
-                node.right = BinaryNode(key, value, parent=node)
-        node.fresh_size()
+                node.right = BinaryTreeNode(key, value, parent=node)
 
-    def __setitem__(self, key, value):
-        self.put(key, value)
+        node.update_size()
+
+    def __getitem__(self, item):
+        return self.get(item)
 
     def get(self, key):
         if self.root:
@@ -122,7 +51,7 @@ class BinarySearchTree(object):
         else:
             raise KeyError
 
-    def _get(self, node: BinaryNode, key):
+    def _get(self, node: BinaryTreeNode, key):
         if key == node.key:
             return node.value
         elif key < node.key:
@@ -136,15 +65,14 @@ class BinarySearchTree(object):
             else:
                 raise KeyError
 
-    def __getitem__(self, item):
-        return self.get(item)
-
+    @property
     def max(self):
         if self.root:
             return self.root.max_child
         else:
             return None
 
+    @property
     def min(self):
         if self.root:
             return self.root.min_child
@@ -157,7 +85,7 @@ class BinarySearchTree(object):
         else:
             return None
 
-    def _floor(self, node: BinaryNode, key):
+    def _floor(self, node: BinaryTreeNode, key):
         if key == node.key:
             return node.left.max_child
         elif key < node.key:
@@ -174,7 +102,7 @@ class BinarySearchTree(object):
         else:
             return None
 
-    def _ceiling(self, node: BinaryNode, key):
+    def _ceiling(self, node: BinaryTreeNode, key):
         if key == node.key:
             return node.right.min_child
         elif key > node.key:
@@ -191,7 +119,7 @@ class BinarySearchTree(object):
         else:
             raise IndexError
 
-    def _select(self, node: BinaryNode, index):
+    def _select(self, node: BinaryTreeNode, index):
         if index > node.size:
             raise IndexError
         elif index == node.left.size:
@@ -201,13 +129,35 @@ class BinarySearchTree(object):
         elif index > node.left.size:
             return self._select(node.right, index - node.left.size - 1)
 
+    def nodes(self, lo=None, hi=None):
+        if self.root:
+            if not lo:
+                lo = self.min.key
+            if not hi:
+                hi = self.max.key
+            node_list = []
+            self._nodes(self.root, node_list, lo, hi)
+            return node_list
+        else:
+            return None
+
+    def _nodes(self, node: BinaryTreeNode, node_list: list, lo, hi):
+        if not node:
+            return
+        if lo < node.key:
+            self._nodes(node.left, node_list, lo, hi)
+        if lo <= node.key and node.key <= hi:
+            node_list.append(node)
+        if hi > node.key:
+            self._nodes(node.right, node_list, lo, hi)
+
     def rank(self, key):
         if self.root:
             return self._rank(self.root, key)
         else:
             raise KeyError
 
-    def _rank(self, node: BinaryNode, key):
+    def _rank(self, node: BinaryTreeNode, key):
         if key == node.key:
             return node.left.size
         elif key < node.key:
@@ -215,7 +165,7 @@ class BinarySearchTree(object):
         elif key > node.key:
             return self._rank(node.right, key) + node.left.size + 1
 
-    def set_root(self, node: BinaryNode):
+    def set_root(self, node: BinaryTreeNode):
         if node:
             node.parent = None
         self.root = node
@@ -226,7 +176,8 @@ class BinarySearchTree(object):
         else:
             return None
 
-    def _delete_min(self, node: BinaryNode):
+    # return deleted node
+    def _delete_min(self, node: BinaryTreeNode):
         min_node = node.min_child
         if min_node.is_root():
             self.set_root(min_node.right)
@@ -242,7 +193,8 @@ class BinarySearchTree(object):
         else:
             return None
 
-    def _delete_max(self, node: BinaryNode):
+    # return deleted node
+    def _delete_max(self, node: BinaryTreeNode):
         max_node = node.max_child
         if max_node.is_root():
             self.set_root(max_node.left)
@@ -258,7 +210,8 @@ class BinarySearchTree(object):
         else:
             raise KeyError
 
-    def _delete(self, node: BinaryNode, key):
+    # return a new subtree root
+    def _delete(self, node: BinaryTreeNode, key):
         if not node:
             return None
         if key < node.key:
@@ -270,11 +223,13 @@ class BinarySearchTree(object):
                 return node.left
             if not node.left:
                 return node.right
-            node_temp = node
-            node = node_temp.right.min_child
-            node.right = self._delete_min(node.right)
-            node.left = node_temp.left
-        node.fresh_size()
+            successor = self._delete_min(node.right)
+            node.parent.set_child(successor)
+            successor.set_left(node.left)
+            successor.set_right(node.right)
+            node = successor
+
+        node.update_size()
         return node
 
     def __delitem__(self, key):
@@ -282,21 +237,29 @@ class BinarySearchTree(object):
 
 
 if __name__ == '__main__':
-    mytree = BinarySearchTree()
-    mytree[3] = "red"
-    mytree[4] = "blue"
-    mytree[6] = "yellow"
-    mytree[2] = "at"
+    tree = BinarySearchTree()
+    tree[1] = "z"
+    tree[2] = "at"
+    tree[3] = "red"
+    tree[4] = "blue"
+    tree[5] = "fight"
+    tree[6] = "yellow"
 
-    print(mytree[6])
-    print(mytree[2])
+    print(tree[6])
+    print(tree[2])
 
-    for i in mytree:
+    tree.generate_graph()
+
+    for i in tree:
         print(i.key)
         print(i.value)
 
-    del mytree[3]
+    del tree[3]
 
-    for i in mytree:
+    for i in tree:
+        print(i.key)
+        print(i.value)
+
+    for i in tree.nodes(3, 5):
         print(i.key)
         print(i.value)

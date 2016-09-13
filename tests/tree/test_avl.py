@@ -1,11 +1,11 @@
 from nose.tools import eq_
 
-from Bradley_trees_and_tree_algorithms.avl_tree import BinarySearchTree
+from Bradley_trees_and_tree_algorithms.avl_tree import AVLTree
 
 
 class TestAvl(object):
     def setup(self):
-        self.tree = BinarySearchTree()
+        self.tree = AVLTree()
         self.tree[1] = "z"
         self.tree[2] = "at"
         self.tree[3] = "red"
