@@ -1,5 +1,5 @@
-from tools.data_structure.node import Node
-from tools.time import timeit
+from cxctools.data_structure.node import Node
+from cxctools.time import timeit
 
 from data_visualization.visual_accumulator import VisualAccumulator
 

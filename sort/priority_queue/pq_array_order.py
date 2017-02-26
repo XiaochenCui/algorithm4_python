@@ -1,12 +1,9 @@
-from basic_data_structure import Stack
-from model import Transaction
-from tool import exch
+from model.data_and_transaction import Transaction
 
 import fileinput
-import sys
 
-from basic_data_structure import Stack
-from tool import print_split
+from data_structure.stack import Stack
+from cxctools.print import print_split
 
 
 class MaxPQ(Stack):

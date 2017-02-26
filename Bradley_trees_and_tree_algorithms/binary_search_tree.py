@@ -238,14 +238,14 @@ class BinarySearchTree(VisualTreeMixin):
 
 if __name__ == '__main__':
     tree = BinarySearchTree()
-    tree[1] = "z"
+    tree[1] = "isis"
     tree[2] = "at"
     tree[3] = "red"
     tree[4] = "blue"
     tree[5] = "fight"
     tree[6] = "yellow"
 
-    print(tree[6])
+    print(vars(tree.root))
     print(tree[2])
 
     tree.generate_graph()

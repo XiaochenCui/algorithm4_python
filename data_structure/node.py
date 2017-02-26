@@ -24,6 +24,28 @@ class Node(object):
     __str__ = __repr__
 
 
+class SimpleNode(object):
+    def __init__(self, key=None, data=None):
+        self._key = key
+        self._data = data
+
+    @property
+    def key(self):
+        return self._key
+
+    @key.setter
+    def key(self, value):
+        self._key = value
+
+    @property
+    def data(self):
+        return self._data
+
+    @data.setter
+    def data(self, value):
+        self._data = value
+
+
 class TreeNode(object):
     def __init__(self, key, init_data, parent=None, left=None, right=None):
         self.key = key
@@ -39,10 +61,10 @@ class TreeNode(object):
         return self.right
 
     def is_left_child(self):
-        return self.parent and self.parent.left==self
+        return self.parent and self.parent.left == self
 
     def is_right_child(self):
-        return self.parent and self.parent.right==self
+        return self.parent and self.parent.right == self
 
     def is_root(self):
         return not self.parent
@@ -57,15 +79,14 @@ class TreeNode(object):
         return self.left and self.right
 
     def replace_node(self, key, data, left, right):
-        self.key=key
-        self.data=data
-        self.left=left
-        self.right=right
+        self.key = key
+        self.data = data
+        self.left = left
+        self.right = right
         if self.has_left_child():
-            self.left.parent=self
+            self.left.parent = self
         if self.has_right_child():
-            self.right.parent=self
-
+            self.right.parent = self
 
     def __repr__(self):
         return '{cls}: (key:{key}, data:{data}, head:{head}, left:{left}, right:{right})' \
